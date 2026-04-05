@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36717.8 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logistics.Domain", "Logistics.Domain\Logistics.Domain.csproj", "{4F6F94BD-43E1-4DBB-AC59-D5952AC25BB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logistics.Application", "Logistics.Application\Logistics.Application.csproj", "{A66D752F-36AC-4305-B507-896FB89E3279}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4F6F94BD-43E1-4DBB-AC59-D5952AC25BB9} = {4F6F94BD-43E1-4DBB-AC59-D5952AC25BB9}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logistics.Infrastructure", "Logistics.Infrastructure\Logistics.Infrastructure.csproj", "{39DAC77D-D773-40A3-82AE-7890EE631343}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4F6F94BD-43E1-4DBB-AC59-D5952AC25BB9} = {4F6F94BD-43E1-4DBB-AC59-D5952AC25BB9}
+		{A66D752F-36AC-4305-B507-896FB89E3279} = {A66D752F-36AC-4305-B507-896FB89E3279}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logistics.API", "Logistics.API\Logistics.API.csproj", "{A7D8EED9-D7D3-4716-9DCE-5B85CA8427A4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{39DAC77D-D773-40A3-82AE-7890EE631343} = {39DAC77D-D773-40A3-82AE-7890EE631343}
+		{A66D752F-36AC-4305-B507-896FB89E3279} = {A66D752F-36AC-4305-B507-896FB89E3279}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4F6F94BD-43E1-4DBB-AC59-D5952AC25BB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F6F94BD-43E1-4DBB-AC59-D5952AC25BB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F6F94BD-43E1-4DBB-AC59-D5952AC25BB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F6F94BD-43E1-4DBB-AC59-D5952AC25BB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A66D752F-36AC-4305-B507-896FB89E3279}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A66D752F-36AC-4305-B507-896FB89E3279}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A66D752F-36AC-4305-B507-896FB89E3279}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A66D752F-36AC-4305-B507-896FB89E3279}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39DAC77D-D773-40A3-82AE-7890EE631343}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39DAC77D-D773-40A3-82AE-7890EE631343}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39DAC77D-D773-40A3-82AE-7890EE631343}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39DAC77D-D773-40A3-82AE-7890EE631343}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7D8EED9-D7D3-4716-9DCE-5B85CA8427A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7D8EED9-D7D3-4716-9DCE-5B85CA8427A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7D8EED9-D7D3-4716-9DCE-5B85CA8427A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7D8EED9-D7D3-4716-9DCE-5B85CA8427A4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {86E88738-85A0-4F53-8FBA-F68DD917FD1C}
+	EndGlobalSection
+EndGlobal
