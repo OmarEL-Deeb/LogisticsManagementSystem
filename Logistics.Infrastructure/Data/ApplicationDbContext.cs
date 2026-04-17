@@ -75,10 +75,14 @@ namespace Logistics.Infrastructure.Data
                 .WithMany()
                 .HasForeignKey(s => s.DestinationWarehouseId)
                 .OnDelete(DeleteBehavior.Restrict);
+<<<<<<< HEAD
             modelBuilder.Entity<Employee>()
              .HasOne(e => e.RoleName)           
              .WithMany(r => r.Employees)    
              .HasForeignKey(e => e.RoleId); 
+=======
+
+>>>>>>> 369c4203daa3a057b22b26e20c6fcdfb71a585d6
         }
 
 

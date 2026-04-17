@@ -25,6 +25,7 @@ namespace Logistics.Infrastructure.Repositories
         {
             return await _dbSet.FindAsync(id);
         }
+<<<<<<< HEAD
 
         public async Task<T?> GetAsync(  Expression<Func<T, bool>> predicate,
        params Expression<Func<T, object>>[] includes)
@@ -43,6 +44,12 @@ namespace Logistics.Infrastructure.Repositories
         }
 
 
+=======
+        //public async Task<IEnumerable<T>> GetAllAsync()
+        //{
+        //   return await _dbSet.ToListAsync();
+        //}
+>>>>>>> 369c4203daa3a057b22b26e20c6fcdfb71a585d6
         public async Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = _dbSet;
@@ -55,6 +62,7 @@ namespace Logistics.Infrastructure.Repositories
 
             return await query.ToListAsync();
         }
+<<<<<<< HEAD
         
         public async Task<IEnumerable<T>> FindAsync(
        Expression<Func<T, bool>> predicate,
@@ -76,6 +84,13 @@ namespace Logistics.Infrastructure.Repositories
         }
 
 
+=======
+        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.Where(predicate).ToListAsync();
+        }
+
+>>>>>>> 369c4203daa3a057b22b26e20c6fcdfb71a585d6
         public async  Task AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
@@ -91,11 +106,19 @@ namespace Logistics.Infrastructure.Repositories
         }
 
      
+<<<<<<< HEAD
         //public  async Task SaveChangesAsync()
         //{
         //    await _context.SaveChangesAsync();
             
         //}
+=======
+        public  async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+            
+        }
+>>>>>>> 369c4203daa3a057b22b26e20c6fcdfb71a585d6
 
         
     }
