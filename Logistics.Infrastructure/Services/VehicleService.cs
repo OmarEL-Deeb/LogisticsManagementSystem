@@ -62,7 +62,7 @@ namespace Logistics.Infrastructure.Services
 
         public async Task<VehicleDto?> GetByIdAsync(int id)
         {
-            var vehicle = await _unitOfWork.Vehicles.GetByIdAsync(id);
+            var vehicle = await _unitOfWork.Vehicles.GetByIdAsync(id) ?? throw new Exception("Vehicle not found.");
             return vehicle == null ? null : _mapper.Map<VehicleDto>(vehicle);
         }
 

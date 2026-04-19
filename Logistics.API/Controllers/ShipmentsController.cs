@@ -32,7 +32,7 @@ namespace Logistics.API.Controllers
 
         [HttpPut("{id}")] 
         public async Task<IActionResult> Update(int id, [FromBody] CreateShipmentDto dto) 
-        { await _shipmentService.UpdateShipmentStatusAsync(id,dto.Status); return NoContent(); }
+        { await _shipmentService.UpdateShipmentAsync(id, dto); return NoContent(); }
         [HttpDelete("{id}")] public async Task<IActionResult> Delete(int id) { await _shipmentService.DeleteShipmentAsync(id); return NoContent(); }
 
         // Custom: Update Status

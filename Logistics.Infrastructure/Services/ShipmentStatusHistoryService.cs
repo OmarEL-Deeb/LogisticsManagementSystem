@@ -22,7 +22,7 @@ namespace Logistics.Infrastructure.Services
 
         public async Task<IEnumerable<ShipmentStatusHistoryDto>> GetHistoryByShipmentIdAsync(int shipmentId)
         {
-            var history = await _unitOfWork.ShipmentStatusHistories.FindAsync(h => h.ShipmentId == shipmentId);
+            var history = await _unitOfWork.ShipmentStatusHistories.FindAsync(h => h.ShipmentId == shipmentId,c=>c.Shipment) ?? throw new Exception("Shipment not found.");
             return _mapper.Map<IEnumerable<ShipmentStatusHistoryDto>>(history.OrderBy(h => h.StatusDate));
         }
     }

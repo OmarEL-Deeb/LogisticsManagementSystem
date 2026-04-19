@@ -66,7 +66,7 @@ namespace Logistics.Infrastructure.Services
 
         public async Task<ShipmentDto?> GetShipmentByIdAsync(int id)
         {
-            var shipment = await _unitOfWork.Shipments.GetByIdAsync(id);
+            var shipment = await _unitOfWork.Shipments.GetByIdAsync(id) ?? throw new Exception("Shipment not found.");
             return shipment == null ? null : _mapper.Map<ShipmentDto>(shipment);
         }
 

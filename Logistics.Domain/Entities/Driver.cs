@@ -9,10 +9,7 @@
         public DateTime HireDate { get; set; }
         public bool IsActive { get; set; } = true;
 
-<<<<<<< HEAD
-=======
-        // Navigation Property (One-to-One with Vehicle)
->>>>>>> 369c4203daa3a057b22b26e20c6fcdfb71a585d6
+
         public Vehicle? Vehicle { get; set; }
     }
 }

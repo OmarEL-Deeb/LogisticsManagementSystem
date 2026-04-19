@@ -46,7 +46,7 @@ namespace Logistics.Infrastructure.Services
 
         public async Task<WarehouseDto?> GetWarehouseByIdAsync(int id)
         {
-            var warehouse = await _unitOfWork.Warehouses.GetAsync(c=>c.WarehouseId==id, c => c.City);
+            var warehouse = await _unitOfWork.Warehouses.GetAsync(c=>c.WarehouseId==id, c => c.City) ?? throw new Exception("Warehouse not found");
             return warehouse == null ? null : _mapper.Map<WarehouseDto>(warehouse);
         }
 
