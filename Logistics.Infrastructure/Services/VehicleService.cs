@@ -4,6 +4,7 @@ using Logistics.Application.Interfaces;
 using Logistics.Application.Interfaces.IServices;
 using Logistics.Domain.Entities;
 using Logistics.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +18,12 @@ namespace Logistics.Infrastructure.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public VehicleService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly ILogger<VehicleService> _logger;
+        public VehicleService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<VehicleService> logger)
         {
             _unitOfWork = unitOfWork;
-            _mapper = mapper;  
+            _mapper = mapper;
+            _logger = logger;
         }
 
        public async Task AssignDriverAsync(int vehicleId, int driverId)
@@ -33,6 +36,7 @@ namespace Logistics.Infrastructure.Services
             vehicle.AssignedDriverId = driverId;
             _unitOfWork.Vehicles.Update(vehicle);
             await _unitOfWork.CompleteAsync();
+            _logger.LogInformation("Driver {DriverId} was successfully assigned to Vehicle {VehicleId}.", driverId, vehicleId);
         }
 
      public async Task<VehicleDto> CreateAsync(CreateVehicleDto dto)

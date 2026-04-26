@@ -12,10 +12,6 @@ namespace Logistics.Domain.Entities
         public int ShipmentId { get; set; }
         public Shipment Shipment { get; set; } = null!;
          
-        public Customer? Customer { get; set; }
-
-        public Vehicle? Vehicle { get; set; }
-
-        public Warehouse? Warehouse { get; set; }
+   
     }
 }

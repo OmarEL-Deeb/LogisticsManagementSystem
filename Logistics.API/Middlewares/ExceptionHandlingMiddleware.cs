@@ -33,12 +33,43 @@ namespace Logistics.API.Middlewares
         {
             context.Response.ContentType = "application/json";
 
-            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            int statusCode = (int)HttpStatusCode.InternalServerError;
+            string message = "An unexpected error occurred. Please try again later.";
+
+            switch (exception)
+            {
+                case ArgumentException:
+                case InvalidOperationException:
+                    statusCode = (int)HttpStatusCode.BadRequest;
+                    message = exception.Message;
+                    break;
+
+                case KeyNotFoundException:
+                    statusCode = (int)HttpStatusCode.NotFound;
+                    message = exception.Message;
+                    break;
+
+                case Exception e when e.GetType() == typeof(Exception):
+
+                    if (e.Message.Contains("not found", StringComparison.OrdinalIgnoreCase))
+                    {
+                        statusCode = (int)HttpStatusCode.NotFound;
+                    }
+                    else
+                    {
+                        statusCode = (int)HttpStatusCode.BadRequest;
+                    }
+
+                    message = e.Message;
+                    break;
+            }
+
+            context.Response.StatusCode = statusCode;
 
             var response = new
             {
-                status = context.Response.StatusCode,
-                message = exception.Message
+                status = statusCode,
+                message = message
             };
 
             var jsonResponse = JsonSerializer.Serialize(response);

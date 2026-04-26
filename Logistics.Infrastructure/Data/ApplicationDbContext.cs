@@ -77,7 +77,7 @@ namespace Logistics.Infrastructure.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Employee>()
-             .HasOne(e => e.RoleName)           
+             .HasOne(e => e.Role)           
              .WithMany(r => r.Employees)    
              .HasForeignKey(e => e.RoleId); 
               

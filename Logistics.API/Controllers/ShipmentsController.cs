@@ -1,5 +1,6 @@
 ﻿using Logistics.Application.DTOs.ShipmentDTOs;
 using Logistics.Application.Interfaces.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +8,7 @@ namespace Logistics.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ShipmentsController : ControllerBase
     {
         private readonly IShipmentService _shipmentService;
@@ -23,7 +25,8 @@ namespace Logistics.API.Controllers
         [HttpGet("{id}")] 
         public async Task<IActionResult> GetById(int id) => Ok(await _shipmentService.GetShipmentByIdAsync(id));
        
-        [HttpPost] 
+        [HttpPost]
+        [Authorize(Roles = "Manager,Admin")]
         public async Task<IActionResult> Create([FromBody] CreateShipmentDto dto)
         {
          var res = await _shipmentService.CreateShipmentAsync(dto); 
@@ -39,6 +42,7 @@ namespace Logistics.API.Controllers
         public class StatusUpdateRequest { public string Status { get; set; } = string.Empty; }
 
         [HttpPatch("{id}/status")]
+        [Authorize(Roles = "Employee,Manager,Admin")]
         public async Task<IActionResult> UpdateStatus(int id, [FromBody] StatusUpdateRequest request)
         {
             await _shipmentService.UpdateShipmentStatusAsync(id, request.Status);

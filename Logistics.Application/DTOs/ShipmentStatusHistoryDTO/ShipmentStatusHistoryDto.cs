@@ -1,4 +1,5 @@
-﻿using Logistics.Domain.Entities;
+﻿using Logistics.Application.DTOs.ShipmentDTOs;
+using Logistics.Domain.Entities;
 using Logistics.Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,6 @@ namespace Logistics.Application.DTOs.ShipmentStatusHistoryDTOs
         public DateTime StatusDate { get; set; }
 
         public int ShipmentId { get; set; }
-        public Shipment Shipment { get; set; } = null!;
+        public ShipmentDto Shipment { get; set; } = null!;
     }
 }

@@ -2,6 +2,7 @@
 using Logistics.Application.DTOs.PaymentDTOs;
 using Logistics.Application.Interfaces.IServices;
 using Logistics.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +15,12 @@ namespace Logistics.Infrastructure.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public PaymentService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly ILogger<PaymentService> _logger;
+        public PaymentService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<PaymentService> logger)
         {
             _unitOfWork = unitOfWork;
-            _mapper = mapper;   
+            _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<PaymentDto> CreatePaymentAsync(CreatePaymentDto dto)
@@ -25,6 +28,8 @@ namespace Logistics.Infrastructure.Services
             var payment = _mapper.Map<Domain.Entities.Payment>(dto);
             await _unitOfWork.Payments.AddAsync(payment);
             await _unitOfWork.CompleteAsync();
+            _logger.LogInformation("Payment of {Amount} was successfully completed for Shipment {ShipmentId} using {Method}.",
+            payment.Amount, payment.ShipmentId, payment.PaymentMethod);
             return _mapper.Map<PaymentDto>(payment);
 
         }
@@ -35,24 +40,24 @@ namespace Logistics.Infrastructure.Services
             return _mapper.Map<IEnumerable<PaymentDto>>(payments);
         }
 
-        public Task<PaymentDto?> GetPaymentByIdAsync(int id)
+        public  async Task<PaymentDto?> GetPaymentByIdAsync(int id)
         {
-            var payment = _unitOfWork.Payments.GetByIdAsync(id);
+            var payment = await _unitOfWork.Payments.GetByIdAsync(id);
             if (payment == null)
                 throw new Exception("Payment not found");
-            return _mapper.Map<Task<PaymentDto?>>(payment);
+            return _mapper.Map<PaymentDto?>(payment);
         }
 
-        public Task<PaymentDto> UpdatePaymentStatusAsync(int id, bool isPaid)
+        public async Task<PaymentDto> UpdatePaymentStatusAsync(int id, bool isPaid)
         {
-            var payment = _unitOfWork.Payments.GetByIdAsync(id);
+            var payment = await _unitOfWork.Payments.GetByIdAsync(id);
             if (payment == null)
                 throw new Exception("Payment not found");
-            payment.Result.IsPaid = isPaid;
-            payment.Result.PaidDate = isPaid ? DateTime.UtcNow : (DateTime?)null;
-            _unitOfWork.Payments.Update(payment.Result);
-            _unitOfWork.CompleteAsync();
-            return _mapper.Map<Task<PaymentDto>>(payment);
+            payment.IsPaid = isPaid;
+            payment.PaidDate = isPaid ? DateTime.UtcNow : (DateTime?)null;
+            _unitOfWork.Payments.Update(payment);
+            await _unitOfWork.CompleteAsync();
+            return _mapper.Map<PaymentDto>(payment);
         }
     }
 }

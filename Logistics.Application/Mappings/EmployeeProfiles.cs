@@ -14,11 +14,12 @@ namespace Logistics.Application.Mappings
     {
         public EmployeeProfiles()
         {
+            CreateMap<CreateEmployeeDto, Employee>()
+                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
+
             CreateMap<Employee, EmployeeDto>()
-            .ForMember(dest => dest.WarehouseName,
-                       opt => opt.MapFrom(src => src.Warehouse.Name))
-            .ForMember(dest => dest.RoleName,
-                       opt => opt.MapFrom(src => src.RoleName.RoleName)); 
+                .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Role.RoleName))
+                .ForMember(dest => dest.WarehouseName, opt => opt.MapFrom(src => src.Warehouse.Name));
         }
     }
 }

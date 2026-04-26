@@ -5,6 +5,7 @@ using Logistics.Application.Interfaces.IServices;
 using Logistics.Domain.Entities;
 using Logistics.Domain.Enums;
 using Logistics.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +18,12 @@ namespace Logistics.Infrastructure.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public ShipmentService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly ILogger<ShipmentService> _logger;
+        public ShipmentService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<ShipmentService> logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<ShipmentDto> CreateShipmentAsync(CreateShipmentDto dto)
@@ -48,6 +51,9 @@ namespace Logistics.Infrastructure.Services
             });
 
             await _unitOfWork.CompleteAsync();
+
+            _logger.LogInformation("Shipment {ShipmentId} was created successfully for Customer {CustomerId} at {Time}.",
+            shipment.ShipmentId, shipment.CustomerId, DateTime.UtcNow);
             return _mapper.Map<ShipmentDto>(shipment);
         }
 
@@ -98,6 +104,8 @@ namespace Logistics.Infrastructure.Services
             });
             _unitOfWork.Shipments.Update(shipment);
             await _unitOfWork.CompleteAsync();
+            _logger.LogInformation("Shipment {ShipmentId} status was updated to '{NewStatus}' at {Time}.",
+            id, newStatus, DateTime.UtcNow);
         }
 
       
