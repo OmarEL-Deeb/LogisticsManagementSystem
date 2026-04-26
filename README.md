@@ -1,82 +1,119 @@
-***
+# 🚚 Logistics Management System API
 
-```markdown
-# Logistics Management System API
+A production-level RESTful backend service for a shipping and logistics company. Covers advanced ASP.NET Core concepts including:
+**Clean Architecture, Unit of Work, Generic Repositories, JWT Authentication, Fluent Validation, AutoMapper, and Global Error Handling.**
 
-## Overview
-The Logistics Management System API is a robust, enterprise-grade RESTful backend service built with **ASP.NET Core 8**. It is engineered to orchestrate and streamline the core operations of a large-scale shipping and logistics company. The system provides secure, high-performance endpoints for managing the complete lifecycle of shipments, fleet assignment, warehouse capacities, and payment processing.
+---
 
-Designed with maintainability and scalability in mind, this project serves as a comprehensive implementation of modern software engineering principles and design patterns.
+## 📁 Repository Structure (Clean Architecture)
 
-## System Architecture
-
-This project strictly adheres to **Clean Architecture** (Onion Architecture) principles, ensuring a complete decoupling of the core business logic from external frameworks, databases, and delivery mechanisms.
-
-### Dependency Flow Diagram
-*The following diagram illustrates the request lifecycle and layer dependencies. (Renders natively in GitHub)*
-
-```mermaid
-graph TD
-    A[Client Request HTTP] --> B(Presentation Layer: Controllers)
-    B -->|DTOs| C(Application Layer: Services & Use Cases)
-    C -->|Interfaces| D{Domain Layer: Entities & Core Rules}
-    E[Infrastructure Layer: EF Core, JWT] -.->|Implements| D
-    C -->|Uses| E
+```text
+LogisticsSolution/
+├── Logistics.Domain/         # Core Entities, Enums, and Repository Interfaces
+├── Logistics.Application/    # Business Logic (Services), DTOs, Mappings, Validations
+├── Logistics.Infrastructure/ # EF Core DbContext, UoW Implementation, JWT Provider
+├── Logistics.API/            # Controllers, Global Middlewares, Dependency Injection
+└── README.md
 ```
 
-* **Domain Layer:** The core of the system. Contains Entities, Enums, and Repository Interfaces. It has zero external dependencies.
-* **Application Layer:** Contains the business logic, Services, DTOs, AutoMapper profiles, and FluentValidation rules. It depends only on the Domain layer.
-* **Infrastructure Layer:** Handles external concerns such as Data Access (Entity Framework Core), implementations of the Unit of Work and Repositories, and JWT Token generation.
-* **Presentation Layer (API):** Consists of thin controllers that route HTTP requests to the Application layer and format standard HTTP responses.
+---
 
-## Technical Stack & Design Patterns
-
-* **Framework:** .NET 8 / C#
-* **Database:** SQL Server via Entity Framework Core (Code-First)
-* **Design Patterns:**
-  * **Generic Repository Pattern:** Abstracts data access logic and reduces code duplication.
-  * **Unit of Work (UoW):** Ensures transactional integrity when business transactions span multiple repositories.
-  * **Dependency Injection (DI):** Facilitates loose coupling and testability across all layers.
-* **Libraries:**
-  * **AutoMapper:** For seamless object-to-object mapping (Entities ↔ DTOs).
-  * **FluentValidation:** Enforces strict, rule-based data validation independently of the domain models.
-  * **BCrypt.Net-Next:** For cryptographic password hashing.
-
-## Core Business Modules & Process Flow
-
-### 1. Shipment Lifecycle Management
-Manages the end-to-end journey of a package. The system enforces strict business rules, such as verifying warehouse capacities and ensuring shipment weights do not exceed assigned vehicle limits.
+## 🗂️ Entity Relationship Overview
 
 ```mermaid
-stateDiagram-v2
-    [*] --> Pending : Shipment Created
-    Pending --> InTransit : Dispatched from Origin
-    InTransit --> Delivered : Arrived at Destination
-    Delivered --> [*]
-    Pending --> Cancelled : Shipment Aborted
+graph TB
+    Countries --> Cities
+    Cities --> Warehouses
+    Warehouses --> Shipments
+    Warehouses --> Employees
+    Customers --> Shipments
+    Vehicles --> Shipments
+    Drivers --> Vehicles
+    Shipments --> Payments
+    Shipments --> ShipmentStatusHistory
+    EmployeeRoles --> Employees
 ```
 
-### 2. Fleet & Personnel Operations
-* **Driver & Vehicle Mapping:** Ensures one-to-one operational assignments (a vehicle can only have one assigned driver concurrently).
-* **Role Management:** Hierarchical employee structuring.
+---
 
-### 3. Payment Processing
-* Secure transaction logging.
-* Enforces idempotent payment rules (prevents duplicate payments for the same shipment ID).
+## 🔄 API Request & Architecture Workflow
 
-## Security & Authorization
+```mermaid
+graph TB
+    REQ([HTTP Request w/ JWT]) --> API[Controllers]
+    API --> VAL{FluentValidation}
+    VAL -- Invalid DTO --> ERR1([400 Bad Request])
+    VAL -- Valid --> APP[Application Services]
+    APP --> BZ{Business Rules Met?}
+    BZ -- No --> ERR2([Exception Middleware -> 400 JSON])
+    BZ -- Yes --> UOW[Unit of Work & Repositories]
+    UOW --> DB[(SQL Server)]
+    DB --> UOW
+    UOW --> MAP[AutoMapper Maps Entity to DTO]
+    MAP --> RES([HTTP 200 OK / 201 Created])
+```
 
-The API implements stateless security using **JSON Web Tokens (JWT)** combined with strict **Role-Based Access Control (RBAC)**.
+---
 
-* **Admin:** Full system access, including employee management and role assignments.
-* **Manager:** Operational oversight, authorized to create shipments and assign fleet resources.
-* **Employee:** Restricted operational access, limited to updating shipment statuses and processing daily warehouse tasks.
+## 📦 Shipment Lifecycle & Business Flow
 
-## Cross-Cutting Concerns
+```mermaid
+graph TB
+    A(["Manager: POST /api/shipments"]) --> B{Weight <= Vehicle Capacity?}
+    B -- No --> C(["Error: Capacity Exceeded"])
+    B -- Yes --> D[Insert Shipment - Status: Pending]
+    D --> E[Insert into ShipmentStatusHistory]
+    E --> F(["Employee: PATCH /api/shipments/{id}/status"])
+    F --> G{New Status = Delivered?}
+    G -- Yes --> H{Was InTransit?}
+    H -- No --> I(["Error: Invalid Transition"])
+    H -- Yes --> J[Set DeliveredAt = DateTime.UtcNow]
+    G -- No --> K[Update Status]
+    J --> K
+    K --> L[Insert into ShipmentStatusHistory]
+```
 
-### Global Exception Handling
-To prevent the leakage of sensitive stack traces and ensure consistent client consumption, a custom **Middleware** intercepts all unhandled exceptions and Business Rule Violations, formatting them into standardized HTTP responses:
+---
 
+## ⚙️ Core Modules & Business Rules Summary
+
+| Module | Core Endpoints | Business Rules Enforced in Services |
+|---|---|---|
+| **Shipments** | `POST`, `GET`, `PATCH /status` | Weight cannot exceed vehicle capacity. Cannot mark `Delivered` unless previously `InTransit`. |
+| **ShipmentStatusHistory** | `GET /shipments/{id}/status-history` | Read-only. Automatically records every status change with a timestamp. |
+| **Vehicles** | `POST`, `GET`, `POST /assign-driver` | Plate number must be unique. A vehicle can only have one assigned driver. |
+| **Drivers** | `POST`, `GET`, `PUT`, `DELETE` | Standard CRUD. Managed for fleet assignments. |
+| **Payments** | `POST`, `GET`, `PATCH /pay` | A shipment cannot be paid for twice. |
+| **Customers** | `POST`, `GET`, `PATCH /deactivate` | Email and Phone number must be unique across the system. |
+| **Warehouses** | `POST`, `GET`, `PUT`, `DELETE` | Capacity must be greater than 0. |
+| **Countries** | `POST`, `GET`, `PUT`, `DELETE` | Country name must be unique system-wide. |
+| **Cities** | `POST`, `GET`, `PUT`, `DELETE` | City name must be unique within its respective Country. |
+| **Employees** | `POST`, `GET`, `PUT`, `DELETE` | Passwords are automatically hashed using BCrypt. Strictly managed by `Admin` role. |
+| **Roles** | `POST`, `GET` | Defines RBAC system roles (e.g., Admin, Manager, Employee). |
+
+---
+
+---
+
+## 🔒 Security & RBAC (Role-Based Access Control)
+
+The API is secured using **JWT (JSON Web Tokens)** with encrypted passwords via `BCrypt.Net-Next`.
+
+| Role | Access Level & Controller Permissions |
+|---|---|
+| `Admin` | Full System Access. The only role authorized to manage `EmployeesController`. |
+| `Manager` | Operational Control. Authorized to create Shipments and assign Fleet resources. |
+| `Employee` | Task Execution. Authorized to update Shipment statuses and process operations. |
+
+*(All secure endpoints require the `Authorization: Bearer <Token>` header).*
+
+---
+
+## 🛡️ Global Error Handling
+
+A custom Middleware intercepts all application exceptions to prevent stack trace leaks and standardize client responses.
+
+**Example Response for Business Rule Violation:**
 ```json
 {
   "status": 400,
@@ -84,46 +121,16 @@ To prevent the leakage of sensitive stack traces and ensure consistent client co
 }
 ```
 
-### Structured Logging
-Critical state mutations are recorded using `.NET ILogger`. The system actively traces:
-* Shipment instantiation and status transitions.
-* Payment completions.
-* Fleet assignment operations.
+---
 
-## Getting Started
+## 🛠️ Technologies & Patterns Used
 
-### Prerequisites
-* .NET 8.0 SDK
-* SQL Server
-
-### Installation & Execution
-
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/your-username/LogisticsManagementSystem.git](https://github.com/your-username/LogisticsManagementSystem.git)
-   cd LogisticsManagementSystem
-   ```
-
-2. **Database Configuration:**
-   Update the `DefaultConnection` string in `Logistics.API/appsettings.json` with your SQL Server credentials.
-
-3. **Security Configuration:**
-   Modify the `JwtSettings:Key` in `appsettings.json` to a robust, secure cryptographic key.
-
-4. **Apply Migrations & Update Database:**
-   ```bash
-   dotnet ef database update --project Logistics.Infrastructure --startup-project Logistics.API
-   ```
-
-5. **Run the Application:**
-   ```bash
-   dotnet run --project Logistics.API
-   ```
-   *Swagger UI will be accessible at `https://localhost:<port>/swagger`.*
-
-## API Testing (Authentication)
-1. Seed or create an Employee record via the database.
-2. Authenticate via `POST /api/auth/login` using the employee's Email and Password.
-3. Extract the `Token` from the response payload.
-4. In the Swagger UI, click **Authorize** and input: `Bearer <your_jwt_token>`.
-```
+- **Framework:** .NET 8 / ASP.NET Core Web API
+- **Database:** Entity Framework Core (SQL Server)
+- **Architecture:** Clean Architecture (Onion)
+- **Design Patterns:** Generic Repository, Unit of Work, Dependency Injection (DI)
+- **Object Mapping:** AutoMapper
+- **Validation:** FluentValidation
+- **Security:** JWT Bearer Authentication, BCrypt Password Hashing
+- **Documentation:** Swagger / OpenAPI (Configured for JWT Auth)
+- **Logging:** built-in `.NET ILogger` for critical business transactions.
