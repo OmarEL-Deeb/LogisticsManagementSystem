@@ -25,22 +25,22 @@ namespace Logistics.Infrastructure.Services
 
         public async Task<AuthResponseDto> LoginAsync(LoginDto loginDto)
         {
-            // 1. جلب بيانات الموظف باستخدام الدالة المتوافقة مع الكود بتاعك
+            
             var employee = await _unitOfWork.Employees.GetAsync(
-                e => e.Email == loginDto.Email, // الـ Predicate
-                e => e.Role                     // الـ Include
+                e => e.Email == loginDto.Email, 
+                e => e.Role                    
             );
 
-            // 2. التحقق من صحة البيانات
+
             if (employee == null || !VerifyPassword(loginDto.Password, employee.PasswordHash))
             {
                 throw new UnauthorizedAccessException("Invalid email or password");
             }
 
-            // 3. توليد التوكن 
+           
             var tokenString = GenerateJwtToken(employee);
 
-            // 4. إرجاع النتيجة
+           
             return new AuthResponseDto
             {
                 Token = tokenString,
@@ -49,10 +49,7 @@ namespace Logistics.Infrastructure.Services
             };
         }
 
-        // ==========================================
-        // الدوال المساعدة (Helper Methods)
-        // ==========================================
-
+        
         private string GenerateJwtToken(Employee employee)
         {
             var claims = new List<Claim>
@@ -63,18 +60,18 @@ namespace Logistics.Infrastructure.Services
         new Claim("WarehouseId", employee.WarehouseId.ToString())
     };
 
-            // 1. تعديل هنا: استخدمنا "Key" بدلاً من "Secret"
+         
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            // 2. قراءة وقت الانتهاء من الإعدادات
+      
             var durationInMinutes = Convert.ToDouble(_configuration["JwtSettings:DurationInMinutes"]);
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["JwtSettings:Issuer"],
                 audience: _configuration["JwtSettings:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(durationInMinutes), // 3. استخدام الوقت الديناميكي
+                expires: DateTime.Now.AddMinutes(durationInMinutes),
                 signingCredentials: creds
             );
 
