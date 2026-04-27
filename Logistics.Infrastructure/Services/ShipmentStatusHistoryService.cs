@@ -22,11 +22,11 @@ namespace Logistics.Infrastructure.Services
 
         public async Task<IEnumerable<ShipmentStatusHistoryDto>> GetHistoryByShipmentIdAsync(int shipmentId)
         {
-            // 1. نتأكد الأول إن الشحنة موجودة في الداتابيز
-            var shipmentExists = await _unitOfWork.Shipments.FindAsync(s => s.ShipmentId == shipmentId); // أو GetByIdAsync
+                  
+            var shipmentExists = await _unitOfWork.Shipments.FindAsync(s => s.ShipmentId == shipmentId); 
             if (!shipmentExists.Any())
             {
-                throw new Exception("Shipment not found."); // هنا الإكسبشن منطقي جداً
+                throw new Exception("Shipment not found.");  
             }
 
   
