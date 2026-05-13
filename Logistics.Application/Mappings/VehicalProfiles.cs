@@ -15,7 +15,7 @@ namespace Logistics.Application.Mappings
         public VehicalProfiles()
         {
             CreateMap<Vehicle, VehicleDto>();
-            CreateMap<CreateVehicleDto, Vehicle>();
+            CreateMap<RequireVehicleDto, Vehicle>();
         }
     }
 }

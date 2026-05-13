@@ -9,13 +9,16 @@ namespace Logistics.Application.DTOs.EmployeeDTOs
 {
     public class EmployeeDto
     {
-         public int EmployeeId { get; set; }
-
+        public int EmployeeId { get; set; }
         public string FullName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public decimal Salary { get; set; }
         public DateTime HireDate { get; set; }
+
+        public int WarehouseId { get; set; }
+        public string WarehouseName { get; set; } = string.Empty;
+
+        public int RoleId { get; set; }
         public string RoleName { get; set; } = string.Empty;
-         public string WarehouseName { get; set; } = string.Empty;
     }
 }

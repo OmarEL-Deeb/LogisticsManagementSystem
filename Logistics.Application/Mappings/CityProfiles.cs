@@ -14,8 +14,9 @@ namespace Logistics.Application.Mappings
          public CityProfiles()
         {
             CreateMap<City, CityDto>()
-                .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country.Name));
-            CreateMap<CreateCityDto, City>();
+                .ForMember(dest => dest.CountryName,
+                           opt => opt.MapFrom(src => src.Country != null ? src.Country.Name : string.Empty));
+            CreateMap<RequireCityDto, City>();
 
 
         }

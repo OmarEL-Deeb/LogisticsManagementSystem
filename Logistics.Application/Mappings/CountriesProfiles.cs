@@ -15,7 +15,7 @@ namespace Logistics.Application.Mappings
         {
 
             CreateMap<Country, CountryDto>();
-            CreateMap<CreateCountryDto, Country>();
+            CreateMap<RequireCountryDto, Country>();
         }
     }
 }

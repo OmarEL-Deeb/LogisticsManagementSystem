@@ -11,10 +11,9 @@ namespace Logistics.Application.DTOs.ShipmentStatusHistoryDTOs
 {
     public class ShipmentStatusHistoryDto
     {
-        public ShipmentStatus Status { get; set; }
+        public int Id { get; set; }
+        public string StatusName { get; set; } = string.Empty;
         public DateTime StatusDate { get; set; }
-
         public int ShipmentId { get; set; }
-        public ShipmentDto Shipment { get; set; } = null!;
     }
 }

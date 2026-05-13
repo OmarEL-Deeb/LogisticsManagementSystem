@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Logistics.Application.DTOs.ShipmentStatusHistoryDTO;
 using Logistics.Application.DTOs.ShipmentStatusHistoryDTOs;
 using Logistics.Domain.Entities;
 
@@ -13,7 +14,8 @@ namespace Logistics.Application.Mappings
     {
         public ShipmentStatusHistoryProfiles()
         {
-            CreateMap<ShipmentStatusHistory, ShipmentStatusHistoryDto>().ReverseMap() ;
+            CreateMap<ShipmentStatusHistory, ShipmentStatusHistoryDto>() ;
+            CreateMap<RequireShipmentStatusHistoryDto, ShipmentStatusHistory>();
         }
     }
 }

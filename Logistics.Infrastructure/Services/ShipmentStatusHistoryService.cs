@@ -1,12 +1,11 @@
-﻿using Logistics.Domain.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Logistics.Application.Interfaces.IServices;
 using Logistics.Application.DTOs.ShipmentStatusHistoryDTOs;
+using Logistics.Application.Interfaces;
 
 namespace Logistics.Infrastructure.Services
 {
@@ -14,6 +13,7 @@ namespace Logistics.Infrastructure.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+
         public ShipmentStatusHistoryService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
@@ -22,18 +22,18 @@ namespace Logistics.Infrastructure.Services
 
         public async Task<IEnumerable<ShipmentStatusHistoryDto>> GetHistoryByShipmentIdAsync(int shipmentId)
         {
-                  
-            var shipmentExists = await _unitOfWork.Shipments.FindAsync(s => s.ShipmentId == shipmentId); 
+            var shipmentExists = await _unitOfWork.Shipments.FindAsync(s => s.ShipmentId == shipmentId);
             if (!shipmentExists.Any())
             {
-                throw new Exception("Shipment not found.");  
+                throw new Exception("Shipment not found.");
             }
 
-  
             var history = await _unitOfWork.ShipmentStatusHistories
-                .FindAsync(h => h.ShipmentId == shipmentId, c => c.Shipment);
+                .FindAsync(h => h.ShipmentId == shipmentId, disableTracking: true);
 
-            return _mapper.Map<IEnumerable<ShipmentStatusHistoryDto>>(history.OrderBy(h => h.StatusDate));
+            var orderedHistory = history.OrderBy(h => h.StatusDate);
+
+            return _mapper.Map<IEnumerable<ShipmentStatusHistoryDto>>(orderedHistory);
         }
     }
 }

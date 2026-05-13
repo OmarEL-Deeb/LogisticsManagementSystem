@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace Logistics.Application.DTOs.PaymentDTOs
 {
-    public class CreatePaymentDto
+    public class RequirePaymentDto
     {
-        public int PaymentId { get; set; }
         public decimal Amount { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
 

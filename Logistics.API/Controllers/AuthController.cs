@@ -23,28 +23,9 @@ namespace Logistics.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-            try
-            {
-                 if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
+            var authResponse = await _authService.LoginAsync(loginDto);
 
-            
-                var authResponse = await _authService.LoginAsync(loginDto);
-
-               
-                return Ok(authResponse);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-        
-                return Unauthorized(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "An error occurred during login.", error = ex.Message });
-            }
+            return Ok(authResponse);
         }
     }
 }

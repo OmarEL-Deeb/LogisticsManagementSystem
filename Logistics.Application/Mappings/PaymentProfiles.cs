@@ -16,7 +16,7 @@ namespace Logistics.Application.Mappings
         { 
             CreateMap<Payment, PaymentDto>()
                 .ForMember(dest => dest.ShipmentId, opt => opt.MapFrom(src => src.Shipment.ShipmentId));
-            CreateMap<CreatePaymentDto, Payment>();
+            CreateMap<RequirePaymentDto, Payment>();
 
         }
     }

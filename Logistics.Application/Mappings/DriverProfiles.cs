@@ -14,7 +14,7 @@ namespace Logistics.Application.Mappings
         public DriverProfiles()
         {
             CreateMap<Driver, DriverDto>();
-            CreateMap<CreateDriverDto, Driver>();
+            CreateMap<RequireDriverDto, Driver>();
         }
     }
 }

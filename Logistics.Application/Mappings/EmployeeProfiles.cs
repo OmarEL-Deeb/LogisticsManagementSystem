@@ -14,7 +14,7 @@ namespace Logistics.Application.Mappings
     {
         public EmployeeProfiles()
         {
-            CreateMap<CreateEmployeeDto, Employee>()
+            CreateMap<RequireEmployeeDto, Employee>()
                 .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
 
             CreateMap<Employee, EmployeeDto>()

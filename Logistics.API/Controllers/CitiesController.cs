@@ -21,14 +21,14 @@ namespace Logistics.API.Controllers
         [HttpGet("{id}")] public async Task<IActionResult> GetById(int id) => Ok(await _service.GetByIdAsync(id));
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateCityDto dto)
+        public async Task<IActionResult> Create([FromBody] RequireCityDto dto)
         {
             var result = await _service.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = result.CityId }, result);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] CreateCityDto dto)
+        public async Task<IActionResult> Update(int id, [FromBody] RequireCityDto dto)
         {
             await _service.UpdateAsync(id, dto);
             return NoContent();

@@ -1,6 +1,6 @@
 ﻿namespace Logistics.Application.DTOs.WarehouseDTOs
 {
-    public class CreateWarehouseDto
+    public class RequireWarehouseDto
     {
         public string Name { get; set; } = string.Empty;
         public int Capacity { get; set; }

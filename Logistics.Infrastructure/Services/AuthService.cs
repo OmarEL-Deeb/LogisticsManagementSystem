@@ -1,7 +1,6 @@
 ﻿using Logistics.Application.DTOs; 
 using Logistics.Application.Interfaces;
 using Logistics.Domain.Entities;
-using Logistics.Domain.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -25,10 +24,11 @@ namespace Logistics.Infrastructure.Services
 
         public async Task<AuthResponseDto> LoginAsync(LoginDto loginDto)
         {
-            
+
             var employee = await _unitOfWork.Employees.GetAsync(
-                e => e.Email == loginDto.Email, 
-                e => e.Role                    
+                e => e.Email == loginDto.Email,
+                disableTracking: true,
+                e => e.Role
             );
 
 
@@ -53,12 +53,12 @@ namespace Logistics.Infrastructure.Services
         private string GenerateJwtToken(Employee employee)
         {
             var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.NameIdentifier, employee.EmployeeId.ToString()),
-        new Claim(ClaimTypes.Name, employee.FullName),
-        new Claim(ClaimTypes.Role, employee.Role.RoleName),
-        new Claim("WarehouseId", employee.WarehouseId.ToString())
-    };
+            {
+            new Claim(ClaimTypes.NameIdentifier, employee.EmployeeId.ToString()),
+            new Claim(ClaimTypes.Name, employee.FullName),
+            new Claim(ClaimTypes.Role, employee.Role.RoleName),
+            new Claim("WarehouseId", employee.WarehouseId.ToString())
+            };
 
          
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]));
@@ -71,7 +71,7 @@ namespace Logistics.Infrastructure.Services
                 issuer: _configuration["JwtSettings:Issuer"],
                 audience: _configuration["JwtSettings:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(durationInMinutes),
+                expires: DateTime.UtcNow.AddMinutes(durationInMinutes),
                 signingCredentials: creds
             );
 

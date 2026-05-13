@@ -14,7 +14,7 @@ namespace Logistics.Application.Mappings
         public ShipmentProfiles()
         {
             CreateMap<Shipment, ShipmentDto>();
-            CreateMap<CreateShipmentDto, Shipment>();
+            CreateMap<RequireShipmentDto, Shipment>();
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Logistics.API.Controllers
         public async Task<IActionResult> GetAllPayments() => Ok(await _service.GetAllPaymentsAsync());
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreatePaymentDto dto)
+        public async Task<IActionResult> Create([FromBody] RequirePaymentDto dto)
         {
             var result = await _service.CreatePaymentAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = result.PaymentId }, result);

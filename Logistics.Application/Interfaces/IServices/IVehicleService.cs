@@ -11,9 +11,9 @@ namespace Logistics.Application.Interfaces.IServices
     {
         Task<IEnumerable<VehicleDto>> GetAllAsync();
         Task<VehicleDto?> GetByIdAsync(int id);
-        Task<VehicleDto> CreateAsync(CreateVehicleDto dto);
-        Task UpdateAsync(int id, CreateVehicleDto dto);
-        Task DeleteAsync(int id);
+        Task<VehicleDto> CreateAsync(RequireVehicleDto dto);
+        Task UpdateAsync(int id, RequireVehicleDto dto);
+        Task DeactivateAsync(int id);
         Task AssignDriverAsync(int vehicleId, int driverId);
     }
 }

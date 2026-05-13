@@ -1,5 +1,6 @@
 using Logistics.API.Extensions;
 using Logistics.API.Middlewares;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +21,7 @@ builder.Services.AddSwaggerDocumentation();
 var app = builder.Build();
 
 // --- 4. Middleware Pipeline ---
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+//app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

@@ -1,10 +1,11 @@
 ﻿using Logistics.Application.Interfaces;
 using Logistics.Application.Interfaces.IServices;
-using Logistics.Domain.Interfaces;
 using Logistics.Infrastructure.Data;
 using Logistics.Infrastructure.Repositories;
 using Logistics.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using FluentValidation;
+using System.Reflection; 
 
 namespace Logistics.API.Extensions
 {
@@ -21,6 +22,8 @@ namespace Logistics.API.Extensions
                 cfg.AddMaps(AppDomain.CurrentDomain.GetAssemblies());
             });
 
+            services.AddValidatorsFromAssembly(typeof(ICountryService).Assembly);
+
             // 3. Repositories & UnitOfWork
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -35,7 +38,7 @@ namespace Logistics.API.Extensions
             services.AddScoped<IShipmentService, ShipmentService>();
             services.AddScoped<IShipmentStatusHistoryService, ShipmentStatusHistoryService>();
             services.AddScoped<IPaymentService, PaymentService>();
-            services.AddScoped<IEmployeeRoleService, EmployeeRoleService>();
+            services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IAuthService, AuthService>();
 

@@ -12,10 +12,9 @@ namespace Logistics.Application.Interfaces.IServices
         {
             Task<IEnumerable<ShipmentDto>> GetAllShipmentsAsync();
             Task<ShipmentDto?> GetShipmentByIdAsync(int id);
-            Task<ShipmentDto> CreateShipmentAsync(CreateShipmentDto dto);
+            Task<ShipmentDto> CreateShipmentAsync(RequireShipmentDto dto);
             Task UpdateShipmentStatusAsync(int id, string newStatus);
-            Task DeleteShipmentAsync(int id);
-           Task UpdateShipmentAsync(int id, CreateShipmentDto dto);
+           Task UpdateShipmentAsync(int id, RequireShipmentDto dto);
     }
     
 }

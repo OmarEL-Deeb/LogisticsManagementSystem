@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Logistics.Application.DTOs.EmployeeRoleDTOs
 {
-    public class EmployeeRoleDto
+    public class RoleDto
     {
         public int RoleId { get; set; }
         public string RoleName { get; set; } = string.Empty;

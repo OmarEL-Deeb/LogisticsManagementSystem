@@ -24,18 +24,18 @@ namespace Logistics.API.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var result = await _service.GetByIdAsync(id);
-            return result == null ? NotFound() : Ok(result);
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateCountryDto dto)
+        public async Task<IActionResult> Create([FromBody] RequireCountryDto dto)
         {
             var result = await _service.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = result.CountryId }, result);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] CreateCountryDto dto)
+        public async Task<IActionResult> Update(int id, [FromBody] RequireCountryDto dto)
         {
             await _service.UpdateAsync(id, dto);
 

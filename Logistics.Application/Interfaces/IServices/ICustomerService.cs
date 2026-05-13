@@ -11,9 +11,8 @@ namespace Logistics.Application.Interfaces.IServices
     {
         Task<IEnumerable<CustomerDto>> GetAllAsync();
         Task<CustomerDto?> GetByIdAsync(int id);
-        Task<CustomerDto> CreateAsync(CreateCustomerDto dto);
-        Task UpdateAsync(int id, CreateCustomerDto dto);
-        Task DeleteAsync(int id);
+        Task<CustomerDto> CreateAsync(RequireCustomerDto dto);
+        Task UpdateAsync(int id, RequireCustomerDto dto);
         Task DeactivateAsync(int id);
     }
 }

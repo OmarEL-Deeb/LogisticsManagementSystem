@@ -6,6 +6,7 @@
         public string Name { get; set; } = string.Empty;
         public int Capacity { get; set; }
         public DateTime CreatedAt { get; set; }
+        public bool IsActive { get; set; }= true;
 
         // Foreign Key
         public int CityId { get; set; }

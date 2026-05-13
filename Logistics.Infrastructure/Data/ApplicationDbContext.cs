@@ -1,19 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Logistics.Domain.Entities;
 
 namespace Logistics.Infrastructure.Data
 {
-    public class ApplicationDbContext:DbContext
+    public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-
         }
+
         public DbSet<Country> Countries { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
@@ -30,6 +25,7 @@ namespace Logistics.Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            
             modelBuilder.Entity<Country>()
                 .HasIndex(c => c.Name)
                 .IsUnique();
@@ -37,11 +33,12 @@ namespace Logistics.Infrastructure.Data
             modelBuilder.Entity<City>()
                 .HasIndex(c => new { c.Name, c.CountryId })
                 .IsUnique();
+
             
             modelBuilder.Entity<Warehouse>()
-                .ToTable(t => t
-                .HasCheckConstraint("CK_Warehouse_Capacity", "Capacity >0"));
+                .ToTable(t => t.HasCheckConstraint("CK_Warehouse_Capacity", "Capacity > 0"));
 
+            
             modelBuilder.Entity<Customer>()
                 .HasIndex(c => c.Email)
                 .IsUnique();
@@ -50,25 +47,43 @@ namespace Logistics.Infrastructure.Data
                 .HasIndex(c => c.Phone)
                 .IsUnique();
 
-            modelBuilder.Entity<Vehicle>().
-                HasIndex(v => v.PlateNumber)
+            modelBuilder.Entity<Customer>().HasQueryFilter(c => c.IsActive);
+
+            modelBuilder.Entity<Driver>()
+                .HasIndex(d => d.LicenseNumber)
                 .IsUnique();
 
-            modelBuilder.Entity<Vehicle>() 
-                .ToTable(t => t
-                .HasCheckConstraint("CK_Vehicle_Capacity", "Capacity > 0"));
-           
+            modelBuilder.Entity<Driver>()
+                .Property(d => d.Salary)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Driver>().HasQueryFilter(d => d.IsActive);
+
             modelBuilder.Entity<Vehicle>()
-               .HasOne(v => v.AssignedDriver)
-               .WithOne(d => d.Vehicle)
-               .HasForeignKey<Vehicle>(v => v.AssignedDriverId)
-               .IsRequired(false);
+                .HasIndex(v => v.PlateNumber)
+                .IsUnique();
+
+            modelBuilder.Entity<Vehicle>()
+                .ToTable(t => t.HasCheckConstraint("CK_Vehicle_Capacity", "Capacity > 0"));
+
+            modelBuilder.Entity<Vehicle>()
+                .HasOne(v => v.AssignedDriver)
+                .WithOne(d => d.Vehicle)
+                .HasForeignKey<Vehicle>(v => v.AssignedDriverId)
+                .IsRequired(false);
+
+            modelBuilder.Entity<Vehicle>()
+                .HasIndex(v => v.AssignedDriverId)
+                .IsUnique()
+                .HasFilter("[AssignedDriverId] IS NOT NULL"); 
+
+            modelBuilder.Entity<Vehicle>().HasQueryFilter(v => v.IsActive);
 
             modelBuilder.Entity<Shipment>()
-              .HasOne(s => s.OriginWarehouse)
-              .WithMany()
-              .HasForeignKey(s => s.OriginWarehouseId)
-              .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(s => s.OriginWarehouse)
+                .WithMany()
+                .HasForeignKey(s => s.OriginWarehouseId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Shipment>()
                 .HasOne(s => s.DestinationWarehouse)
@@ -76,16 +91,45 @@ namespace Logistics.Infrastructure.Data
                 .HasForeignKey(s => s.DestinationWarehouseId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Shipment>()
+                .HasOne(s => s.Customer)
+                .WithMany() 
+                .HasForeignKey(s => s.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Shipment>()
+                .Property(s => s.Price)
+                .HasColumnType("decimal(18,2)");
+
+          
+            modelBuilder.Entity<Payment>()
+                .Property(p => p.Amount)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<EmployeeRole>()
+                .HasIndex(r => r.RoleName)
+                .IsUnique();
+
             modelBuilder.Entity<Employee>()
-             .HasOne(e => e.Role)           
-             .WithMany(r => r.Employees)    
-             .HasForeignKey(e => e.RoleId); 
-              
+                .HasIndex(e => e.Email)
+                .IsUnique();
 
+            modelBuilder.Entity<Employee>()
+                .Property(e => e.Salary)
+                .HasColumnType("decimal(18,2)");
 
+            modelBuilder.Entity<Employee>()
+                .HasOne(e => e.Role)
+                .WithMany(r => r.Employees)
+                .HasForeignKey(e => e.RoleId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Employee>()
+                .HasOne(e => e.Warehouse)
+                .WithMany()
+                .HasForeignKey(e => e.WarehouseId)
+                .OnDelete(DeleteBehavior.Restrict);
 
         }
-
-
     }
 }

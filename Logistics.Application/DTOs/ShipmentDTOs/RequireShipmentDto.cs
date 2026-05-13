@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Logistics.Application.DTOs.ShipmentDTOs
 {
-    public class CreateShipmentDto
+    public class RequireShipmentDto
     {
         public int CustomerId { get; set; }
         public int OriginWarehouseId { get; set; }

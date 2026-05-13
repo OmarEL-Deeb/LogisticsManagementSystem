@@ -11,8 +11,8 @@ namespace Logistics.Application.Interfaces.IServices
     {
         Task<IEnumerable<CountryDto>> GetAllAsync();
         Task<CountryDto?> GetByIdAsync(int id);
-        Task<CountryDto> CreateAsync(CreateCountryDto dto);
-        Task UpdateAsync(int id, CreateCountryDto dto);
+        Task<CountryDto> CreateAsync(RequireCountryDto dto);
+        Task UpdateAsync(int id, RequireCountryDto dto);
         Task DeleteAsync(int id);
     }
 }

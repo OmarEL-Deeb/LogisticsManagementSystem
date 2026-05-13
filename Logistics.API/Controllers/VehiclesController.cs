@@ -14,14 +14,13 @@ namespace Logistics.API.Controllers
 
         [HttpGet] public async Task<IActionResult> GetAll() => Ok(await _service.GetAllAsync());
         [HttpGet("{id}")] public async Task<IActionResult> GetById(int id) => Ok(await _service.GetByIdAsync(id));
-        [HttpPost] public async Task<IActionResult> Create([FromBody] CreateVehicleDto dto) { var res = await _service.CreateAsync(dto); return CreatedAtAction(nameof(GetById), new { id = res.VehicleId }, res); }
-        [HttpPut("{id}")] public async Task<IActionResult> Update(int id, [FromBody] CreateVehicleDto dto) { await _service.UpdateAsync(id, dto); return NoContent(); }
-        [HttpDelete("{id}")] public async Task<IActionResult> Delete(int id) { await _service.DeleteAsync(id); return NoContent(); }
+        [HttpPost] public async Task<IActionResult> Create([FromBody] RequireVehicleDto dto) { var res = await _service.CreateAsync(dto); return CreatedAtAction(nameof(GetById), new { id = res.VehicleId }, res); }
+        [HttpPut("{id}")] public async Task<IActionResult> Update(int id, [FromBody] RequireVehicleDto dto) { await _service.UpdateAsync(id, dto); return NoContent(); }
+        [HttpDelete("{id}")] public async Task<IActionResult> Delete(int id) { await _service.DeactivateAsync(id); return NoContent(); }
 
-        public class AssignDriverRequest { public int DriverId { get; set; } }
 
         [HttpPost("{id}/assign-driver")]
-        public async Task<IActionResult> AssignDriver(int id, [FromBody] AssignDriverRequest request)
+        public async Task<IActionResult> AssignDriver(int id, [FromBody] AssignDriverDto request)
         {
             await _service.AssignDriverAsync(id, request.DriverId);
             return NoContent();

@@ -8,7 +8,7 @@ namespace Logistics.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+ //   [Authorize]
     public class ShipmentsController : ControllerBase
     {
         private readonly IShipmentService _shipmentService;
@@ -20,37 +20,34 @@ namespace Logistics.API.Controllers
             _paymentService = paymentService;
         }
 
-        [HttpGet] 
+        [HttpGet]
         public async Task<IActionResult> GetAll() => Ok(await _shipmentService.GetAllShipmentsAsync());
         [HttpGet("{id}")] 
         public async Task<IActionResult> GetById(int id) => Ok(await _shipmentService.GetShipmentByIdAsync(id));
        
         [HttpPost]
-        [Authorize(Roles = "Manager,Admin")]
-        public async Task<IActionResult> Create([FromBody] CreateShipmentDto dto)
+      //  [Authorize(Roles = "Manager,Admin")]
+        public async Task<IActionResult> Create([FromBody] RequireShipmentDto dto)
         {
          var res = await _shipmentService.CreateShipmentAsync(dto); 
          return CreatedAtAction(nameof(GetById), new { id = res.ShipmentId }, res); 
         }
 
-        [HttpPut("{id}")] 
-        public async Task<IActionResult> Update(int id, [FromBody] CreateShipmentDto dto) 
+        [HttpPut("{id}")]
+   //     [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Update(int id, [FromBody] RequireShipmentDto dto) 
         { await _shipmentService.UpdateShipmentAsync(id, dto); return NoContent(); }
-        [HttpDelete("{id}")] public async Task<IActionResult> Delete(int id) { await _shipmentService.DeleteShipmentAsync(id); return NoContent(); }
 
-        // Custom: Update Status
-        public class StatusUpdateRequest { public string Status { get; set; } = string.Empty; }
+      
 
         [HttpPatch("{id}/status")]
-        [Authorize(Roles = "Employee,Manager,Admin")]
-        public async Task<IActionResult> UpdateStatus(int id, [FromBody] StatusUpdateRequest request)
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] StatusUpdateDto request)
         {
             await _shipmentService.UpdateShipmentStatusAsync(id, request.Status);
             return NoContent();
         }
 
 
-        // Custom: Get Shipment Payments (GET /api/shipments/{id}/payments)
         [HttpGet("{id}/payments")]
         public async Task<IActionResult> GetShipmentPayments(int id)
         {

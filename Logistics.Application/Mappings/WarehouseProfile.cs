@@ -15,7 +15,7 @@ namespace Logistics.Application.Mappings
         {
             CreateMap<Warehouse, WarehouseDto>()
                 .ForMember(dest => dest.CityName, opt => opt.MapFrom(src => src.City.Name));
-            CreateMap<CreateWarehouseDto, Warehouse>()
+            CreateMap<RequireWarehouseDto, Warehouse>()
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
 
         }

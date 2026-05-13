@@ -15,8 +15,8 @@ namespace Logistics.Application.Mappings
      {
         public EmployeeRoleProfiles()
         {
-            CreateMap<EmployeeRole, EmployeeRoleDto>().ReverseMap();
-           CreateMap<EmployeeRole, CreateEmployeeRoleDto>().ReverseMap();
+            CreateMap<EmployeeRole, RoleDto>();
+           CreateMap<RequireRoleDto , EmployeeRole>();
         }
     
     }

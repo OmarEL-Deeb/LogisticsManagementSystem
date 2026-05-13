@@ -1,6 +1,7 @@
-﻿using Logistics.Application.Interfaces;
+﻿using System;
+using System.Threading.Tasks;
+using Logistics.Application.Interfaces;
 using Logistics.Domain.Entities;
-using Logistics.Domain.Interfaces;
 using Logistics.Infrastructure.Data;
 
 namespace Logistics.Infrastructure.Repositories
@@ -9,44 +10,70 @@ namespace Logistics.Infrastructure.Repositories
     {
         private readonly ApplicationDbContext _context;
 
-        public IGenericRepository<Warehouse> Warehouses { get; private set; }
-        public IGenericRepository<Customer> Customers { get; private set; }
-        public IGenericRepository<Driver> Drivers { get; private set; }
-        public IGenericRepository<Vehicle> Vehicles { get; private set; }
-        public IGenericRepository<Shipment> Shipments { get; private set; }
-        public IGenericRepository<ShipmentStatusHistory> ShipmentStatusHistories { get; private set; }
-        public IGenericRepository<Payment> Payments { get; private set; }
-        public IGenericRepository<Employee> Employees { get; private set; }
-        public IGenericRepository<EmployeeRole> EmployeeRoles { get; private set; }
-        public IGenericRepository<City> Cities { get; private set; }
-        public IGenericRepository<Country> Countries { get; private set; }
+        private IGenericRepository<Warehouse>? _warehouses;
+        private IGenericRepository<Customer>? _customers;
+        private IGenericRepository<Driver>? _drivers;
+        private IGenericRepository<Vehicle>? _vehicles;
+        private IGenericRepository<Shipment>? _shipments;
+        private IGenericRepository<ShipmentStatusHistory>? _shipmentStatusHistories;
+        private IGenericRepository<Payment>? _payments;
+        private IGenericRepository<Employee>? _employees;
+        private IGenericRepository<EmployeeRole>? _employeeRoles;
+        private IGenericRepository<City>? _cities;
+        private IGenericRepository<Country>? _countries;
 
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
-
-            
-            Warehouses = new GenericRepository<Warehouse>(_context);
-            Customers = new GenericRepository<Customer>(_context);
-            Drivers = new GenericRepository<Driver>(_context);
-            Vehicles = new GenericRepository<Vehicle>(_context);
-            Shipments = new GenericRepository<Shipment>(_context);
-            ShipmentStatusHistories = new GenericRepository<ShipmentStatusHistory>(_context);
-            Payments = new GenericRepository<Payment>(_context);
-            Employees = new GenericRepository<Employee>(_context);
-            EmployeeRoles = new GenericRepository<EmployeeRole>(_context);
-            Cities = new GenericRepository<City>(_context);
-            Countries = new GenericRepository<Country>(_context);
         }
 
+        // 2. Public properties using Lazy Initialization (??=)
+        // The repository is only instantiated when it is explicitly called by a service.
+        public IGenericRepository<Warehouse> Warehouses =>
+            _warehouses ??= new GenericRepository<Warehouse>(_context);
+
+        public IGenericRepository<Customer> Customers =>
+            _customers ??= new GenericRepository<Customer>(_context);
+
+        public IGenericRepository<Driver> Drivers =>
+            _drivers ??= new GenericRepository<Driver>(_context);
+
+        public IGenericRepository<Vehicle> Vehicles =>
+            _vehicles ??= new GenericRepository<Vehicle>(_context);
+
+        public IGenericRepository<Shipment> Shipments =>
+            _shipments ??= new GenericRepository<Shipment>(_context);
+
+        public IGenericRepository<ShipmentStatusHistory> ShipmentStatusHistories =>
+            _shipmentStatusHistories ??= new GenericRepository<ShipmentStatusHistory>(_context);
+
+        public IGenericRepository<Payment> Payments =>
+            _payments ??= new GenericRepository<Payment>(_context);
+
+        public IGenericRepository<Employee> Employees =>
+            _employees ??= new GenericRepository<Employee>(_context);
+
+        public IGenericRepository<EmployeeRole> EmployeeRoles =>
+            _employeeRoles ??= new GenericRepository<EmployeeRole>(_context);
+
+        public IGenericRepository<City> Cities =>
+            _cities ??= new GenericRepository<City>(_context);
+
+        public IGenericRepository<Country> Countries =>
+            _countries ??= new GenericRepository<Country>(_context);
+
+        // 3. Commit the transaction to the database
         public async Task<int> CompleteAsync()
         {
+            // Here, EF Core applies all changes in a single transaction
             return await _context.SaveChangesAsync();
         }
 
+        // 4. Free up unmanaged resources
         public void Dispose()
         {
             _context.Dispose();
+            GC.SuppressFinalize(this); // Good practice to prevent finalizer queue overhead
         }
     }
 }

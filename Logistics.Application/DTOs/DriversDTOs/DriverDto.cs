@@ -14,5 +14,6 @@ namespace Logistics.Application.DTOs.DriversDTOs
         public decimal Salary { get; set; }
         public DateTime HireDate { get; set; }
         public bool IsActive { get; set; } = true;
+        public string? AssignedVehiclePlateNumber { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace Logistics.Application.Mappings
     {
         public CustomerProfiles() { 
             CreateMap<Customer, CustomerDto>();
-             CreateMap<CreateCustomerDto, Customer>();
+             CreateMap<RequireCustomerDto, Customer>();
         }
         
     }

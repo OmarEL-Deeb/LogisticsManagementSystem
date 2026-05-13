@@ -124,12 +124,15 @@ namespace Logistics.Infrastructure.Migrations
 
                     b.Property<string>("LicenseNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Salary")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("DriverId");
+
+                    b.HasIndex("LicenseNumber")
+                        .IsUnique();
 
                     b.ToTable("Drivers");
                 });
@@ -144,7 +147,7 @@ namespace Logistics.Infrastructure.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -152,6 +155,9 @@ namespace Logistics.Infrastructure.Migrations
 
                     b.Property<DateTime>("HireDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -167,6 +173,9 @@ namespace Logistics.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("EmployeeId");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.HasIndex("RoleId");
 
@@ -185,9 +194,12 @@ namespace Logistics.Infrastructure.Migrations
 
                     b.Property<string>("RoleName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("RoleId");
+
+                    b.HasIndex("RoleName")
+                        .IsUnique();
 
                     b.ToTable("EmployeeRoles");
                 });
@@ -347,6 +359,9 @@ namespace Logistics.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -357,7 +372,7 @@ namespace Logistics.Infrastructure.Migrations
 
                     b.ToTable("Warehouses", t =>
                         {
-                            t.HasCheckConstraint("CK_Warehouse_Capacity", "Capacity >0");
+                            t.HasCheckConstraint("CK_Warehouse_Capacity", "Capacity > 0");
                         });
                 });
 
@@ -377,13 +392,13 @@ namespace Logistics.Infrastructure.Migrations
                     b.HasOne("Logistics.Domain.Entities.EmployeeRole", "Role")
                         .WithMany("Employees")
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Logistics.Domain.Entities.Warehouse", "Warehouse")
                         .WithMany()
                         .HasForeignKey("WarehouseId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Role");
@@ -407,7 +422,7 @@ namespace Logistics.Infrastructure.Migrations
                     b.HasOne("Logistics.Domain.Entities.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Logistics.Domain.Entities.Warehouse", "DestinationWarehouse")

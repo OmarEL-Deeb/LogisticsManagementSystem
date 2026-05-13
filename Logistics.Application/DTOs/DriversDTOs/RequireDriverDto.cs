@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Logistics.Application.DTOs.DriversDTOs
 {
-    public class CreateDriverDto
+    public class RequireDriverDto
     {
         public string FullName { get; set; } = string.Empty;
         public string LicenseNumber { get; set; } = string.Empty;

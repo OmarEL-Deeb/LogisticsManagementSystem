@@ -12,7 +12,7 @@ namespace Logistics.Application.Interfaces.IServices
     {
         Task<IEnumerable<PaymentDto>> GetAllPaymentsAsync();
         Task<PaymentDto?> GetPaymentByIdAsync(int id);
-      Task<PaymentDto> CreatePaymentAsync(CreatePaymentDto dto);
+      Task<PaymentDto> CreatePaymentAsync(RequirePaymentDto dto);
         Task<PaymentDto> UpdatePaymentStatusAsync(int id, bool isPaid);
     }
 }

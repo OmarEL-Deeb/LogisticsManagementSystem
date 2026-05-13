@@ -12,20 +12,14 @@ namespace Logistics.API.Controllers
 
         public ShipmentStatusHistoryController(IShipmentStatusHistoryService historyService)
         {
-                        _historyService = historyService;
+             _historyService = historyService;
                 
         }
-        [HttpGet("{id}/status-history")]
+        [HttpGet("{id}")]
 
         public async Task<IActionResult> GetStatusHistory(int id)
         {
             var history = await _historyService.GetHistoryByShipmentIdAsync(id);
-
-            if (!history.Any())
-            {
-                return NotFound();
-            }
-    
             return Ok(history);
         }
     }

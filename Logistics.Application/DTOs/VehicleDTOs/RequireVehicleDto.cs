@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Logistics.Application.DTOs.VehicleDTOs
 {
-    public class CreateVehicleDto
+    public class RequireVehicleDto
     {
         public string PlateNumber { get; set; } = string.Empty;
         public double Capacity { get; set; }
-        public bool IsActive { get; set; } = true;
+        public int? AssignedDriverId { get; set; }
 
 
     }

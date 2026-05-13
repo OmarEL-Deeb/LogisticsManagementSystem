@@ -11,8 +11,8 @@ namespace Logistics.Application.Interfaces.IServices
     {
         Task<IEnumerable<WarehouseDto>> GetAllWarehousesAsync();
         Task<WarehouseDto?> GetWarehouseByIdAsync(int id);
-        Task<WarehouseDto> CreateWarehouseAsync(CreateWarehouseDto dto);
-        Task UpdateWarehouseAsync(int id, CreateWarehouseDto dto);
-        Task DeleteWarehouseAsync(int id);
+        Task<WarehouseDto> CreateWarehouseAsync(RequireWarehouseDto dto);
+        Task UpdateWarehouseAsync(int id, RequireWarehouseDto dto);
+        Task DeactivateWarehouseAsync(int id);
     }
 }
